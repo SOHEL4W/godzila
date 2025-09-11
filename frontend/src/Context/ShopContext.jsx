@@ -21,12 +21,12 @@ const ShopContextProvider = (props) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:4000/allproducts');
+        const response = await fetch('https://godzila-backend.onrender.com/allproducts');
         const data = await response.json();
         setAll_Product(data);
 
         if(localStorage.getItem('auth-token')){
-          const cartResponse = await fetch('http://localhost:4000/getcart', {
+          const cartResponse = await fetch('https://godzila-backend.onrender.com/getcart', {
             method:'POST',
             headers:{
               Accept:'application/form-data',
@@ -51,7 +51,7 @@ const ShopContextProvider = (props) => {
   const addToCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
     if(localStorage.getItem('auth-token')){
-      fetch('http://localhost:4000/addtocart',{
+      fetch('https://godzila-backend.onrender.com/addtocart',{
         method:'POST',
         headers:{
           Accept:'application/form-data',
@@ -68,7 +68,7 @@ const ShopContextProvider = (props) => {
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     if(localStorage.getItem('auth-token')){
-      fetch('http://localhost:4000/removefromcart',{
+      fetch('https://godzila-backend.onrender.com/removefromcart',{
         method:'POST',
         headers:{
           Accept:'application/form-data',

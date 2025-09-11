@@ -17,7 +17,7 @@ const LoginSignUp = () => {
   const login = async () => {
     console.log("Login Executed", formData);
     let responseData;
-    await fetch('http://localhost:4000/login', { // Point to the /login endpoint
+    await fetch('https://godzila-backend.onrender.com/login', { // Point to the /login endpoint
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -37,7 +37,7 @@ const LoginSignUp = () => {
   const signup = async () => {
     console.log("Signup Executed", formData);
     let responseData;
-    await fetch('http://localhost:4000/signup', {
+    await fetch('https://godzila-backend.onrender.com/signup', {
       method: 'POST',
       headers: {
         Accept: 'application/json', // Corrected this header
