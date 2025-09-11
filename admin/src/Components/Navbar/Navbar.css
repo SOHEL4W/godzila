@@ -1,0 +1,37 @@
+.nav-profile{
+    width: 65px;
+    height: 65px;
+}
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 60px;
+    box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.1);
+    margin-bottom:1px;
+    background: white;
+
+}
+.nav-logo{
+    width: 200px;
+}
+@media(max-width:800px){
+    .navbar{
+        padding: 15px 30px;
+    }
+    .nav-logo{
+        width: 150px;
+    }
+    .nav-profile{
+        width: 50px;
+        height: 50px;
+    }
+}
+.nav_logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 25px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
