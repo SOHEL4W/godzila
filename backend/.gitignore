@@ -1,0 +1,7 @@
+# Dependencies
+node_modules/
+.env
+
+# Keep upload directory structure but ignore contents
+/upload/images/*
+!/upload/images/.gitkeep
