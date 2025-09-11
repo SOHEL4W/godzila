@@ -8,9 +8,34 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const fs = require("fs");
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, 'upload/images');
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 app.use(express.json());
-app.use(cors());
+
+// Serve static files from the upload directory
+app.use('/images', express.static(path.join(__dirname, 'upload/images')));
+
+// CORS Configuration
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'https://godzila-wfmv.onrender.com'  // Add your admin panel domain
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization', 'auth-token']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 //API Creation
 app.get("/", (req, res) => {
