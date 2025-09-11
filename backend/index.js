@@ -29,7 +29,6 @@ const corsOptions = {
         'http://localhost:5173',
         'https://godzila.vercel.app',
         'https://godzila-admin.vercel.app',
-        "https://godzila-wfmv.onrender.com/",
         "https://godzila-wfmv.onrender.com"
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
