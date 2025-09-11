@@ -22,19 +22,22 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'upload/images')));
 
 // CORS Configuration
-app.use(cors({
+const corsOptions = {
     origin: [
         'http://localhost:3000',
         'http://localhost:5173',
-        'https://godzila-wfmv.onrender.com'  // Add your admin panel domain
+        'https://godzila.vercel.app',
+        'https://godzila-admin.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization', 'auth-token']
-}));
+};
 
-// Handle preflight requests
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Handle preflight requests for specific routes
+app.options('/api/*', cors(corsOptions));
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 //API Creation
