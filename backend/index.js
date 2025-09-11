@@ -34,10 +34,8 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization', 'auth-token']
 };
 
+// Enable CORS for all routes
 app.use(cors(corsOptions));
-
-// Handle preflight requests for specific routes
-app.options('/api/*', cors(corsOptions));
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 //API Creation
