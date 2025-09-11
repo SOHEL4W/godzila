@@ -11,7 +11,7 @@ const cors = require("cors");
 const fs = require("fs");
 
 // Ensure upload directory exists
-const uploadDir = path.join(__dirname, 'upload/images');
+const uploadDir = path.join(__dirname, 'public/images');
 if (!fs.existsSync(uploadDir)){
     fs.mkdirSync(uploadDir, { recursive: true });
 }
