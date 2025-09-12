@@ -17,7 +17,7 @@ if (!fs.existsSync(uploadDir)){
 }
 
 app.use(express.json());
-const __dirname = path.resolve();
+
 console.log(__dirname)
 // Serve static files from the upload directory
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
@@ -50,18 +50,18 @@ app.get("/", (req, res) => {
 //image storage engine
 
 const storage = multer.diskStorage({
-    destination: './upload/images',
+    destination: './public/images',
     filename :(req, file, cb)=>{
         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 const upload = multer({storage: storage});
 //creating upload endpoint
-app.use('/images', express.static('upload/images'));
+app.use('/images', express.static('public/images'));
 app.post("/upload", upload.single('product'), (req, res) => {
     res.json({ 
         success: 1,
-        image_url: `http://localhost:${port}/images/${req.file.filename}`
+        image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
      });
 });
 
