@@ -17,7 +17,8 @@ if (!fs.existsSync(uploadDir)){
 }
 
 app.use(express.json());
-
+const __dirname = path.resolve();
+console.log(__dirname)
 // Serve static files from the upload directory
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
