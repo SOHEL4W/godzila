@@ -12,14 +12,15 @@ const streamifier = require('streamifier');
 
 app.use(express.json());
 
-// CORS Configuration - No changes needed here
+// This list now contains the exact, correct URL for your admin panel
 const corsOptions = {
     origin: [
         'http://localhost:3000',
         'http://localhost:5173',
         'https://godzila.vercel.app',
         'https://godzila-admin.vercel.app',
-        "https://godzila-wfmv.onrender.com"
+        "https://godzila-wfmv.onrender.com",
+        "https://godzila-admin-p87c.onrender.com" // <-- The correct URL
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     credentials: true,
@@ -30,8 +31,7 @@ app.use(cors(corsOptions));
 // Database Connection
 mongoose.connect(process.env.DATABASE_URL);
 
-// --- Cloudinary Configuration ---
-// This uses the credentials from your .env file
+// Cloudinary Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -43,44 +43,35 @@ app.get("/", (req, res) => {
     res.send("Express App is Running");
 });
 
-// --- Image Upload Endpoint (Updated for Cloudinary) ---
-// We use memoryStorage to handle the file as a buffer, not save it to disk.
+// Image Upload Endpoint
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// This endpoint now uploads the file buffer to Cloudinary
 app.post("/upload", upload.single("product"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: 0, message: "No file uploaded." });
     }
 
-    // Create an upload stream to Cloudinary
     let cld_upload_stream = cloudinary.uploader.upload_stream(
       {
-        folder: "products" // Optional: organizes uploads in a 'products' folder in Cloudinary
+        folder: "products"
       },
       (error, result) => {
         if (error) {
           console.error(error);
           return res.status(500).json({ success: 0, message: "Error uploading to Cloudinary" });
         }
-        // Send back the secure URL of the uploaded image
-        // This response format matches exactly what your admin panel expects.
         res.json({
             success: 1,
             image_url: result.secure_url
         });
       }
     );
-
-    // Pipe the file buffer from the request into the Cloudinary upload stream
     streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
 });
 
 
-// --- Product Schema and API Endpoints (No Changes Needed) ---
-// The rest of your code remains the same as it correctly uses the image URL.
-
+// Product Schema and API Endpoints
 const Product = mongoose.model("Product", {
     id: { type: Number, required: true },
     name: { type: String, required: true },
@@ -130,7 +121,7 @@ app.get('/allproducts', async (req, res) => {
     res.send(products);
 });
 
-// User Schema and Endpoints... (rest of your file remains unchanged)
+// User Schema and Endpoints... (The rest of your file is unchanged)
 const Users = mongoose.model('Users',{
     name:{
         type:String,
@@ -151,7 +142,6 @@ const Users = mongoose.model('Users',{
     }
 })
 
-// Creating Endpoint for registering the user
 app.post('/signup',async (req,res)=>{
 
     let check = await Users.findOne({email:req.body.email});
@@ -181,7 +171,6 @@ app.post('/signup',async (req,res)=>{
     res.json({success:true,token})
 })
 
-// creating endpoint for user login
 app.post('/login',async (req,res)=>{
     let user = await Users.findOne({email:req.body.email});
     if (user) {
@@ -204,38 +193,34 @@ app.post('/login',async (req,res)=>{
     }
 })
 
-// creating endpoint for newcollection data
 app.get('/newcollections',async (req,res)=>{
     let products = await Product.find({});
     let newcollection = products.slice(1).slice(-8);
     res.send(newcollection);
 })
 
-// creating endpoint for popular in women section
 app.get('/popularinwomen',async (req,res)=>{
     let products = await Product.find({category:"women"});
     let popular_in_women = products.slice(0,4);
     res.send(popular_in_women);
 })
 
-// creating middelware to fetch user
-    const fetchUser = async (req,res,next)=>{
-        const token = req.header('auth-token');
-        if (!token) {
-            res.status(401).send({errors:"Please authenticate using valid token"})
-        }
-        else{
-            try {
-                const data = jwt.verify(token,'secret_ecom');
-                req.user = data.user;
-                next();
-            } catch (error) {
-                res.status(401).send({errors:"please authenticate using a valid token"})
-            }
+const fetchUser = async (req,res,next)=>{
+    const token = req.header('auth-token');
+    if (!token) {
+        res.status(401).send({errors:"Please authenticate using valid token"})
+    }
+    else{
+        try {
+            const data = jwt.verify(token,'secret_ecom');
+            req.user = data.user;
+            next();
+        } catch (error) {
+            res.status(401).send({errors:"please authenticate using a valid token"})
         }
     }
+}
 
-// creating endpoint for adding products in cartdata
 app.post('/addtocart',fetchUser,async (req,res)=>{
     let userData = await Users.findOne({_id:req.user.id});
     userData.cartData[req.body.itemId] += 1;
@@ -243,7 +228,6 @@ app.post('/addtocart',fetchUser,async (req,res)=>{
     res.send("Added")
 })
 
-// creating endpoint to remove product from cartdata
 app.post('/removefromcart',fetchUser,async (req,res)=>{
     let userData = await Users.findOne({_id:req.user.id});
     if(userData.cartData[req.body.itemId]>0)
@@ -252,7 +236,6 @@ app.post('/removefromcart',fetchUser,async (req,res)=>{
     res.send("Removed")
 })
 
-// creating endpoint to get cartdata
 app.post('/getcart',fetchUser,async (req,res)=>{
     let userData = await Users.findOne({_id:req.user.id});
     res.json(userData.cartData);
