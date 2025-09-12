@@ -1,20 +1,16 @@
-
+import React from 'react'
 import './Navbar.css'
-import logo from '../../assets/logo.png'
-import navProfile from '../../assets/nav-profile.png'
-
+import navlogo from '../../assets/nav-logo.svg'
+// This is the line that has been fixed
+import navProfile from '../../assets/nav-Profile.png'
 
 export const Navbar = () => {
   return (
     <div className='navbar'>
-        <div className='nav_logo'>
-                <img src={logo} alt="logo" />
-                <p>GODZILA</p>
-              </div>
-        <img src={navProfile} alt="" className="nav-profile" />
-
-        
+      <img src={navlogo} alt="" className="nav-logo" />
+      <img src={navProfile} alt="" className="nav-profile" />
     </div>
   )
 }
-export default Navbar;
+
+export default Navbar
