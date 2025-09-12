@@ -20,7 +20,8 @@ const corsOptions = {
         'https://godzila.vercel.app',
         'https://godzila-admin.vercel.app',
         "https://godzila-wfmv.onrender.com",
-        "https://godzila-admin-p87c.onrender.com" // <-- The correct URL
+        "https://godzila-admin-p87c.onrender.com",
+        "https://godzila-admin.onrender.com"// <-- The correct URL
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     credentials: true,
