@@ -19,35 +19,67 @@ export const AddProduct = () => {
   const changeHandler = (e) =>{
     setProductDetails({...productDetails,[e.target.name]:e.target.value})
   }
-  const Add_Product = async() =>{
-    console.log(productDetails);
-    let responseData;
-    let product = productDetails;
-    const formData = new FormData();
-    formData.append('product',image);
+  const Add_Product = async() => {
+    try {
+      if (!image) {
+        alert('Please select an image');
+        return;
+      }
 
-    await fetch('https://godzila-backend.onrender.com/upload',{
-      method:'POST',
-      headers:{
-          Accept:'application/json',
-      },
-      body:formData
-      
-  }).then((resp)=>resp.json()).then((data)=>{responseData=data})
-  if(responseData.success){
-    product.image = responseData.image_url;
-    console.log(product);
-    await fetch('https://godzila-backend.onrender.com/addproduct',{
-      method:'POST',
-      headers:{
-        Accept:'application/json',
-          'Content-Type':'application/json',
-      },
-      body:JSON.stringify(product)
-    }).then((resp)=>resp.json()).then((data)=>{
-      data.success?alert('Product Added Successfully'):alert('Failed to add product')
-    })
-  }}
+      // First upload the image to Cloudinary
+      const formData = new FormData();
+      formData.append('product', image);
+
+      const uploadResponse = await fetch('https://godzila-backend.onrender.com/upload', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: formData
+      });
+
+      const responseData = await uploadResponse.json();
+
+      if (responseData.success) {
+        // If image upload successful, add the product
+        const product = {
+          ...productDetails,
+          image: responseData.image_url
+        };
+
+        const addProductResponse = await fetch('https://godzila-backend.onrender.com/addproduct', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(product)
+        });
+
+        const addProductData = await addProductResponse.json();
+        
+        if (addProductData.success) {
+          alert('Product Added Successfully');
+          // Clear the form
+          setImage(false);
+          setProductDetails({
+            name: "",
+            image: "",
+            category: "women",
+            new_price: "",
+            old_price: ""
+          });
+        } else {
+          alert('Failed to add product: ' + (addProductData.error || 'Unknown error'));
+        }
+      } else {
+        alert('Failed to upload image: ' + (responseData.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Error adding product. Please try again.');
+    }
+  }
   return (
     <div className='add-product'>
         <div className="addproduct-itemfield">
