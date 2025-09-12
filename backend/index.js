@@ -244,7 +244,7 @@ app.post('/getcart',fetchUser,async (req,res)=>{
 
 app.listen(port, (error) => {
     if (!error) {
-        console.log("Server Running on Port " + port);
+        console.log("SERVER IS LIVE WITH THE FINAL CORS FIX!");
     } else {
         console.log("Error : " + error);
     }
