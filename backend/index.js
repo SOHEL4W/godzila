@@ -147,7 +147,7 @@ app.post('/signup',async (req,res)=>{
 
     let check = await Users.findOne({email:req.body.email});
     if (check) {
-        return res.status(400).json({success:false,errors:"existing user found with same email address"})
+        return res.status(400).json({success:false,error:"existing user found with same email address"})
     }
     let cart = {};
     for (let i = 0; i < 300; i++) {
@@ -186,11 +186,11 @@ app.post('/login',async (req,res)=>{
             res.json({success:true,token});
         }
         else{
-            res.json({success:false,errors:"Wrong Password"});
+            res.json({success:false,error:"Wrong Password"});
         }
     }
     else{
-        res.json({success:false,errors:"Wrong Email Id"})
+        res.json({success:false,error:"Wrong Email Id"})
     }
 })
 
@@ -209,7 +209,7 @@ app.get('/popularinwomen',async (req,res)=>{
 const fetchUser = async (req,res,next)=>{
     const token = req.header('auth-token');
     if (!token) {
-        res.status(401).send({errors:"Please authenticate using valid token"})
+        res.status(401).send({error:"Please authenticate using valid token"})
     }
     else{
         try {
@@ -217,7 +217,7 @@ const fetchUser = async (req,res,next)=>{
             req.user = data.user;
             next();
         } catch (error) {
-            res.status(401).send({errors:"please authenticate using a valid token"})
+            res.status(401).send({error:"please authenticate using a valid token"})
         }
     }
 }
